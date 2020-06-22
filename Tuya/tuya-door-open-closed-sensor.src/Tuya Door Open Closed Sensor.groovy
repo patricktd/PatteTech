@@ -17,7 +17,7 @@ import physicalgraph.zigbee.clusters.iaszone.ZoneStatus
 import physicalgraph.zigbee.zcl.DataType
 
 metadata {
-	definition(name: "Tuya Open/Closed Sensor", namespace: "patte", author: "Patrick Teixeira", runLocally: true, minHubCoreVersion: '000.017.0012', executeCommandsLocally: false, genericHandler: "Zigbee", ocfDeviceType: "x.com.st.d.sensor.contact") {
+	definition(name: "Tuya Open/Closed Sensor", namespace: "patricktd", author: "Patrick Teixeira", runLocally: true, minHubCoreVersion: '000.017.0012', executeCommandsLocally: false, genericHandler: "Zigbee", ocfDeviceType: "x.com.st.d.sensor.contact") {
 		capability "Battery"
 		capability "Configuration"
 		capability "Contact Sensor"
