@@ -1,7 +1,7 @@
 /**
  *  Tuya Open/Closed Sensor
  *
- *  Copyright 2020 SmartThings
+ *  Copyright 2020 SmartThings - patte.com.br
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  *  in compliance with the License. You may obtain a copy of the License at:
@@ -17,7 +17,7 @@ import physicalgraph.zigbee.clusters.iaszone.ZoneStatus
 import physicalgraph.zigbee.zcl.DataType
 
 metadata {
-	definition(name: "Tuya Open/Closed Sensor", namespace: "patricktd", author: "Patrick Teixeira", runLocally: true, minHubCoreVersion: '000.017.0012', executeCommandsLocally: false, genericHandler: "Zigbee", ocfDeviceType: "x.com.st.d.sensor.contact") {
+	definition(name: "Tuya Open/Closed Sensor", namespace: "patricktd", author: "Patrick Teixeira (Patte Tech)", runLocally: true, minHubCoreVersion: '000.017.0012', executeCommandsLocally: false, genericHandler: "Zigbee", ocfDeviceType: "x.com.st.d.sensor.contact") {
 		capability "Battery"
 		capability "Configuration"
 		capability "Contact Sensor"
