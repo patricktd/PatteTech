@@ -26,6 +26,7 @@ metadata {
 		capability "Sensor"
 
  		fingerprint endpointId: "01", profileId: "0104", deviceId: "0402", inClusters: "0000,0001,0003,0500", outClusters: "0003", manufacturer: "TUYATEC-n4qd0btb", model: "RH3001"
+		fingerprint endpointId: "01", profileId: "0104", deviceId: "0402", inClusters: "0000,000A,0001,0500", outClusters: "0019", manufacturer: "TUYATEC-trhrga6p", model: "RH3001"
 	}
 
 	simulator {
