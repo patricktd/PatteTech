@@ -14,7 +14,7 @@
  *
  */
 metadata {
- definition (name: "Simulated Battery", namespace: "patricktd", author: "Patrick Teixeira (Patte Tech)") {
+ definition (name: "Simulated Battery", namespace: "patricktd", author: "Patrick Teixeira (Patte Tech)", ocfDeviceType: "x.com.st.d.remotecontroller") {
   capability "Battery"
   capability "Relative Humidity Measurement"
   capability "Temperature Measurement"

@@ -27,29 +27,10 @@ metadata {
 
  		fingerprint endpointId: "01", profileId: "0104", deviceId: "0402", inClusters: "0000,0001,0003,0500", outClusters: "0003", manufacturer: "TUYATEC-n4qd0btb", model: "RH3001"
 		fingerprint endpointId: "01", profileId: "0104", deviceId: "0402", inClusters: "0000,000A,0001,0500", outClusters: "0019", manufacturer: "TUYATEC-trhrga6p", model: "RH3001"
+        fingerprint endpointId: "01", profileId: "0104", deviceId: "0402", inClusters: "0000,000A,0001,0500", outClusters: "0019", manufacturer: "TUYATEC-xnoof3ts", model: "RH3001"
 	}
 
-	simulator {
 
-	}
-
-	tiles(scale: 2) {
-		multiAttributeTile(name: "contact", type: "generic", width: 6, height: 4) {
-			tileAttribute("device.contact", key: "PRIMARY_CONTROL") {
-				attributeState "open", label: '${name}', icon: "st.contact.contact.open", backgroundColor: "#e86d13"
-				attributeState "closed", label: '${name}', icon: "st.contact.contact.closed", backgroundColor: "#00A0DC"
-			}
-		}
-
-		valueTile("battery", "device.battery", decoration: "flat", inactiveLabel: false, width: 2, height: 2) {
-			state "battery", label: '${currentValue}% battery', unit: ""
-		}
-
-		standardTile("refresh", "device.refresh", inactiveLabel: false, decoration: "flat", width: 2, height: 2) {
-			state "default", action: "refresh.refresh", icon: "st.secondary.refresh"
-		}
-
-	}
 }
 
 private getIAS_ZONE_TYPE_ATTRIBUTE() { 0x0001 }
@@ -149,17 +130,4 @@ def refresh() {
 	def refreshCmds = zigbee.readAttribute(zigbee.POWER_CONFIGURATION_CLUSTER, BATTERY_VOLTAGE_VALUE_ATTRIBUTE) + zigbee.readAttribute(zigbee.IAS_ZONE_CLUSTER, zigbee.ATTRIBUTE_IAS_ZONE_STATUS) + zigbee.enrollResponse()
 
 	return refreshCmds
-}
-
-def configure() {
-	// Device-Watch allows 2 check-in misses from device + ping (plus 1 min lag time)
-	// enrolls with default periodic reporting until newer 5 min interval is confirmed
-	sendEvent(name: "checkInterval", value: 2 * 60 * 60 + 1 * 60, displayed: false, data: [protocol: "zigbee", hubHardwareId: device.hub.hardwareID, offlinePingable: "1"])
-
-	log.debug "Configuring Reporting, IAS CIE, and Bindings."
-	def cmds = refresh() +
-		zigbee.configureReporting(zigbee.IAS_ZONE_CLUSTER, zigbee.ATTRIBUTE_IAS_ZONE_STATUS, DataType.BITMAP16, 30, 60 * 5, null) +
-		zigbee.batteryConfig() +
-		zigbee.enrollResponse()
-	return cmds
 }
