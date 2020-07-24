@@ -25,8 +25,9 @@ metadata {
 		capability "Health Check"
 		capability "Sensor"
 
-        fingerprint endpointId: "01", profileId: "0104", deviceId: "0402", inClusters: "0000,0001,0003,0500", manufacturer: "TUYATEC-b3ov3nor", model: "RH3040"
-		
+		fingerprint endpointId: "01", profileId: "0104", deviceId: "0402", inClusters: "0000,0001,0003,0500", manufacturer: "TUYATEC-b3ov3nor", model: "RH3040"
+        fingerprint endpointId: "01", profileId: "0104", deviceId: "0402", inClusters: "0000,0001,0003,0500", manufacturer: "TUYATEC-kpz6r4qx", model: "RH3040"
+
 	}
 
 	simulator {
@@ -41,6 +42,9 @@ metadata {
 					"http://cdn.device-gse.smartthings.com/Motion/Motion2.jpg",
 					"http://cdn.device-gse.smartthings.com/Motion/Motion3.jpg"
 			])
+		}
+		section {
+			input "tempOffset", "number", title: "Temperature offset", description: "Select how many degrees to adjust the temperature.", range: "*..*", displayDuringSetup: false
 		}
 	}
 
@@ -104,6 +108,13 @@ def parse(String description) {
 			} else if (descMap?.clusterInt == 0x0500 && descMap.attrInt == 0x0002 && descMap.commandInt != 0x07) {
 				def zs = new ZoneStatus(zigbee.convertToInt(descMap.value, 16))
 				map = translateZoneStatus(zs)
+			} else if (descMap?.clusterInt == zigbee.TEMPERATURE_MEASUREMENT_CLUSTER && descMap.commandInt == 0x07) {
+				if (descMap.data[0] == "00") {
+					log.debug "TEMP REPORTING CONFIG RESPONSE: $descMap"
+					sendEvent(name: "checkInterval", value: 60 * 12, displayed: false, data: [protocol: "zigbee", hubHardwareId: device.hub.hardwareID, offlinePingable: "1"])
+				} else {
+					log.warn "TEMP REPORTING CONFIG FAILED- error code: ${descMap.data[0]}"
+				}
 			} else if (descMap.clusterInt == 0x0406 && descMap.attrInt == 0x0000) {
 				def value = descMap.value.endsWith("01") ? "active" : "inactive"
 				log.debug "Doing a read attr motion event"
@@ -161,6 +172,12 @@ private Map getBatteryResult(rawValue) {
 				volts = maxVolts
 			def pct = batteryMap[volts]
 			result.value = pct
+		} else if (device.getDataValue("manufacturer") == "Bosch") {
+			def minValue = 21
+			def maxValue = 30
+			def pct = Math.round((rawValue - minValue) * 100 / (maxValue - minValue))
+			pct = pct > 0 ? pct : 1
+			result.value = Math.min(100, pct)
 		} else { // Centralite
 			def useOldBatt = shouldUseOldBatteryReporting()
 			def minVolts = useOldBatt ? 2.1 : 2.4
@@ -259,6 +276,7 @@ def configure() {
 	} else {
 		configCmds += zigbee.batteryConfig()
 	}
+	configCmds += zigbee.temperatureConfig(30, 300)
 	configCmds += zigbee.readAttribute(zigbee.IAS_ZONE_CLUSTER, zigbee.ATTRIBUTE_IAS_ZONE_STATUS)
 	configCmds += zigbee.readAttribute(zigbee.POWER_CONFIGURATION_CLUSTER, batteryAttr)
 
